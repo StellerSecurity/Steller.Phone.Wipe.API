@@ -17,6 +17,10 @@ class WipeUserController
     public function auth(Request $request): \Illuminate\Http\JsonResponse
     {
 
+        if($request->input('auth_token') === null && strlen($request->input('auth_token')) < 10) {
+            return response()->json([], 400);
+        }
+
         $wiperUser = PhoneWipeUsers::where(
             [
                 'username' => Hash::make($request->input('username')),
