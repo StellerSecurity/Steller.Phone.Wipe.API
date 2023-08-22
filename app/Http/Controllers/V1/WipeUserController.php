@@ -1,13 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\V1;
 
 use App\Models\PhoneWipeUsers;
 use App\Status;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class WipeUserController
 {
