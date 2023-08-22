@@ -10,4 +10,6 @@ enum Status: int
 
     case WIPING = 3;
 
+    case UNKNOWN = 4;
+
 }
