@@ -2,24 +2,81 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Models\PhoneWipeUsers;
+use App\Status;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class WipeUserController
 {
 
-    public function add(Request $request) {
+    /**
+     * Login auth.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function auth(Request $request): \Illuminate\Http\JsonResponse
+    {
 
+        $wiperUser = PhoneWipeUsers::where(
+            [
+                'username' => Hash::make($request->input('username')),
+                'password' => Hash::make($request->input('password'))
+            ]
+        )->get();
 
-        // Our custom encryption key:
-        $key = 'U2x2QdvosFTtk5nL0ejrKqLFP1tUDtSt';
+        if($wiperUser === null) {
+            return response()->json([], 400);
+        }
 
-        $encrypter = new Encrypter(
-            key: $key,
-            cipher: config('app.cipher'),
+        return response()->json($wiperUser, 200);
+    }
+
+    /**
+     * Will create a wipe user into DB.
+     * The auth_token should only be stored into the phone-device.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function add(Request $request): \Illuminate\Http\JsonResponse
+    {
+
+        $wipeUser = new PhoneWipeUsers(
+            [
+                'username' => Hash::make($request->input('username')),
+                'password' => Hash::make($request->input('password')),
+                'auth_token' => $request->input('auth_token'),
+                'status' => Status::ACTIVE
+            ]
         );
+        $wipeUser->save();
 
-        $encryptedValue = $encrypter->encrypt('hello');
+        return response()->json($wipeUser, 200);
+
+    }
+
+    /**
+     * Finds
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function findbytoken(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
+        return response()->json($wiperUser, 200);
+    }
+
+    public function patch(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
+        if($wiperUser === null) {
+            return response()->json([], 400);
+        }
+        $wiperUser->fill($request->only('status'));
+        $wiperUser->save();
+        return response()->json($wiperUser, 200);
 
     }
 
