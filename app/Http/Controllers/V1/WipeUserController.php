@@ -28,14 +28,16 @@ class WipeUserController
             return response()->json([], 400);
         }
 
+        $password = $request->input('password');
+
         // wrong login.
-        if(!Hash::check($request->input('password'), $wiperUser->password)) {
+        if(!Hash::check($password, $wiperUser->password)) {
             return response()->json([], 400);
         }
 
         // needsRehash, update in DB.
         if (Hash::needsRehash($wiperUser->password)) {
-            $wiperUser->password = Hash::make($request->input('password'));
+            $wiperUser->password = Hash::make($password);
             $wiperUser->save();
         }
 
