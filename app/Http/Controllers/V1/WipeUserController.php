@@ -35,8 +35,7 @@ class WipeUserController
 
         // needsRehash, update in DB.
         if (Hash::needsRehash($wiperUser->password)) {
-            $hashed = Hash::make($request->input('password'));
-            $wiperUser->password = $hashed;
+            $wiperUser->password = Hash::make($request->input('password'));
             $wiperUser->save();
         }
 
