@@ -18,11 +18,7 @@ class WipeUserController
     public function auth(Request $request): JsonResponse
     {
 
-        $wiperUser = PhoneWipeUsers::where(
-            [
-                'username' => $request->input('username')
-            ]
-        )->first();
+        $wiperUser = PhoneWipeUsers::where(['username' => $request->input('username')])->first();
 
         if($wiperUser === null) {
             return response()->json([], 400);
@@ -40,7 +36,6 @@ class WipeUserController
             $wiperUser->password = Hash::make($password);
             $wiperUser->save();
         }
-
 
         return response()->json($wiperUser, 200);
     }
