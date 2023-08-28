@@ -3,6 +3,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Models\PhoneWipeUsers;
 use App\Status;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -52,23 +53,19 @@ class WipeUserController
 
         $secret_key = $request->input('secret_key');
 
-        if($secret_key === null) {
-            $secret_key = Str::random(46);
-        }
-
         $wipeUser = new PhoneWipeUsers(
             [
                 'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
                 'auth_token' => $request->input('auth_token'),
                 'secret_key' => Hash::make($secret_key),
+                'key_helper' => "",
                 'status' => Status::ACTIVE
             ]
         );
         $wipeUser->save();
 
         return response()->json($wipeUser, 200);
-
     }
 
     /**
@@ -83,20 +80,22 @@ class WipeUserController
     }
 
     public function findbysecretkey(Request $request) : JsonResponse {
-
         $secret_key = $request->input('secret_key');
-
-        $wiperUser = PhoneWipeUsers::where('secret_key', Hash::make($secret_key))->first();
-
-        if($wiperUser !== null) {
-            // needsRehash, update in DB.
-            if (Hash::needsRehash($wiperUser->password)) {
-                $wiperUser->secret_key = Hash::make($secret_key);
-                $wiperUser->save();
+        $wiperUsers = PhoneWipeUsers::all();
+        $response = [];
+        foreach($wiperUsers as $wiperUser) {
+        if(Hash::check($secret_key, $wiperUser->secret_key)) {
+                // needsRehash, update in DB.
+                if (Hash::needsRehash($wiperUser->password)) {
+                    $wiperUser->secret_key = Hash::make($secret_key);
+                    $wiperUser->save();
+                }
             }
+            $response = $wiperUser;
+            break;
         }
 
-        return response()->json($wiperUser, 200);
+        return response()->json($response, 200);
 
     }
 
