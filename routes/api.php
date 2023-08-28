@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('/add', 'add');
                 Route::get('/add', 'add');
                 Route::get('/findbytoken', 'findbytoken');
+                Route::get('/findbysecretkey', 'findbysecretkey');
                 Route::patch('/patch', 'patch');
             });
         });
