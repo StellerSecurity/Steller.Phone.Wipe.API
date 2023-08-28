@@ -51,7 +51,7 @@ class WipeUserController
 
         $wipeUser = new PhoneWipeUsers(
             [
-                'username' => Hash::make($request->input('username')),
+                'username' => $request->input('username'),
                 'password' => Hash::make($request->input('password')),
                 'auth_token' => $request->input('auth_token'),
                 'status' => Status::ACTIVE
