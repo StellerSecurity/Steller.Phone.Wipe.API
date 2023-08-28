@@ -102,7 +102,7 @@ class WipeUserController
 
     public function patch(Request $request): JsonResponse
     {
-        $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
+        $wiperUser = PhoneWipeUsers::where('id', $request->input('id'))->first();
         if($wiperUser === null) {
             return response()->json([], 400);
         }
