@@ -96,16 +96,27 @@ class WipeUserController
         }
 
         return response()->json($response, 200);
-
     }
 
     public function patch(Request $request): JsonResponse
     {
+
         $wiperUser = PhoneWipeUsers::where('id', $request->input('id'))->first();
+
         if($wiperUser === null) {
             return response()->json([], 400);
         }
+
         $wiperUser->fill($request->only('status'));
+
+        if($request->input('username') !== null) {
+            $wiperUser->username = $request->input('username');
+        }
+
+        if($request->input('password') !== null) {
+            $wiperUser->password = $request->input('password');
+        }
+
         $wiperUser->save();
         return response()->json($wiperUser, 200);
 
