@@ -114,7 +114,7 @@ class WipeUserController
         }
 
         if($request->input('password') !== null) {
-            $wiperUser->password = $request->input('password');
+            $wiperUser->password = Hash::make($request->input('password'));
         }
 
         $wiperUser->save();
