@@ -31,6 +31,17 @@
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
     ),
   ),
+  'mondago/laravel-application-insights' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Mondago\\ApplicationInsights\\ServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Insights' => 'Mondago\\ApplicationInsights\\Facade',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
