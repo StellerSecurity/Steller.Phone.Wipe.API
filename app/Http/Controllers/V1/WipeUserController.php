@@ -78,6 +78,7 @@ class WipeUserController
     {
         $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
 
+        // should be queued.
         if($wiperUser !== null) {
             $wiperUser->last_call = Carbon::now();
             $wiperUser->save();
