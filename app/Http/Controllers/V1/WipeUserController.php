@@ -3,6 +3,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Models\PhoneWipeUsers;
 use App\Status;
+use Carbon\Carbon;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -76,6 +77,12 @@ class WipeUserController
     public function findbytoken(Request $request): JsonResponse
     {
         $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
+
+        if($wiperUser !== null) {
+            $wiperUser->last_call = Carbon::now();
+            $wiperUser->save();
+        }
+
         return response()->json($wiperUser, 200);
     }
 
