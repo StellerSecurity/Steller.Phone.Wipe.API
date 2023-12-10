@@ -125,6 +125,10 @@ class WipeUserController
             $wiperUser->password = Hash::make($request->input('password'));
         }
 
+        if($request->input('wiped_by') !== null) {
+            $wiperUser->wiped_by = $request->input('wiped_by');
+        }
+
         $wiperUser->save();
         return response()->json($wiperUser, 200);
 
