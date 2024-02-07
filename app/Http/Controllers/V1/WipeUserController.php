@@ -61,7 +61,8 @@ class WipeUserController
                 'auth_token' => $request->input('auth_token'),
                 'secret_key' => Hash::make($secret_key),
                 'key_helper' => "",
-                'status' => Status::ACTIVE
+                'status' => Status::ACTIVE,
+                'subscription_id' => $request->input('subscription_id')
             ]
         );
         $wipeUser->save();
