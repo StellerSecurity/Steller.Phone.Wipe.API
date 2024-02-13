@@ -97,7 +97,7 @@ class WipeUserController
         $subscription_id = $request->input('subscription_id');
 
         if($subscription_id === null) {
-            return response()->json(null);
+            return response()->json();
         }
 
         $wipe = PhoneWipeUsers::where('subscription_id', $request->input('subscription_id'))->first();
