@@ -91,6 +91,21 @@ class WipeUserController
         return response()->json($wiperUser, 200);
     }
 
+    public function findbysubscriptionid(Request $request)
+    {
+
+        $subscription_id = $request->input('subscription_id');
+
+        if($subscription_id === null) {
+            return response()->json(null);
+        }
+
+        $wipe = PhoneWipeUsers::where('subscription_id', $request->input('subscription_id'))->first();
+
+        return response()->json($wipe);
+
+    }
+
     public function findbysecretkey(Request $request) : JsonResponse {
         $secret_key = $request->input('secret_key');
         $wiperUsers = PhoneWipeUsers::all();
