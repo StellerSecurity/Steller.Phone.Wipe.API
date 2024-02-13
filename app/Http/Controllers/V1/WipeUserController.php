@@ -91,7 +91,7 @@ class WipeUserController
         return response()->json($wiperUser, 200);
     }
 
-    public function findbysubscriptionid(Request $request)
+    public function findbysubscriptionid(Request $request): JsonResponse
     {
 
         $subscription_id = $request->input('subscription_id');
