@@ -60,7 +60,7 @@ class WipeUserController
                 'password' => Hash::make($request->input('password')),
                 'auth_token' => $request->input('auth_token'),
                 'secret_key' => Hash::make($secret_key),
-                'key_helper' => "",
+                'key_helper' => time(),
                 'status' => Status::ACTIVE,
                 'subscription_id' => $request->input('subscription_id')
             ]
