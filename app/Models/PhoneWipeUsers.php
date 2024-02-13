@@ -13,6 +13,6 @@ class PhoneWipeUsers extends Model
 
     protected $table = "phone_wipe_users";
 
-    protected $fillable = ['username', 'password', 'auth_token', 'status', 'secret_key', 'key_helper', 'last_call', 'wiped_by'];
+    protected $fillable = ['username', 'password', 'auth_token', 'subscription_id', 'status', 'secret_key', 'key_helper', 'last_call', 'wiped_by'];
 
 }
