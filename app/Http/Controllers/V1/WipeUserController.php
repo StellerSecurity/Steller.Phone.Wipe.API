@@ -81,7 +81,7 @@ class WipeUserController
 
         // should be queued.
         if($wiperUser !== null) {
-            $wiperUser->last_call = Carbon::now();
+            //$wiperUser->last_call = Carbon::now();
             if($wiperUser->subscription_id === null) {
                 $wiperUser->subscription_id = $request->input('subscription_id');
             }
