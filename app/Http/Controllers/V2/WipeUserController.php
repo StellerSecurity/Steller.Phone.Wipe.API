@@ -81,7 +81,7 @@ class WipeUserController
                 'auth_token' => Hash::make($auth_token),
                 'secret_key' => Hash::make($secret_key),
                 'key_helper' => time(),
-                'status' => Status::ACTIVE,
+                'status' => Status::ACTIVE->value,
                 'subscription_id' => $request->input('subscription_id')
             ]
         );
