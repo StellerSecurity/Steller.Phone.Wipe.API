@@ -82,7 +82,7 @@ class WipeUserController
                 'secret_key' => Hash::make($secret_key),
                 'key_helper' => time(),
                 'status' => Status::ACTIVE->value,
-                'subscription_id' => $request->input('subscription_id')
+                'subscription_id' => $subscription_id
             ]
         );
         $wipeUser->save();
