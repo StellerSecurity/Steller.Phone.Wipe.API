@@ -21,13 +21,25 @@ class WipeUserController
     public function auth(Request $request): JsonResponse
     {
 
-        $wiperUser = PhoneWipeUsers::where(['username' => Hash::make($request->input('username'))])->first();
+        $username = $request->input('username');
+
+        if($username === null) {
+            return response()->json([], 400);
+        }
+
+        $hashed_username = Hash::make($username);
+
+        $wiperUser = PhoneWipeUsers::where(['username' => $hashed_username])->first();
 
         if($wiperUser === null) {
             return response()->json([], 400);
         }
 
         $password = $request->input('password');
+
+        if($password === null) {
+            return response()->json([], 400);
+        }
 
         // wrong login.
         if(!Hash::check($password, $wiperUser->password)) {
@@ -53,16 +65,24 @@ class WipeUserController
     {
 
         $secret_key = $request->input('secret_key');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $auth_token = $request->input('auth_token');
+        $subscription_id = $request->input('subscription_id');
+
+        if($username == null or $subscription_id == null or $password == null or $secret_key == null or $auth_token == null) {
+            return response()->json([], 400);
+        }
 
         $wipeUser = new PhoneWipeUsers(
             [
-                'username' => Hash::make($request->input('username')),
-                'password' => Hash::make($request->input('password')),
-                'auth_token' => Hash::make($request->input('auth_token')),
+                'username' => Hash::make($username),
+                'password' => Hash::make($password),
+                'auth_token' => Hash::make($auth_token),
                 'secret_key' => Hash::make($secret_key),
                 'key_helper' => time(),
-                'status' => Status::ACTIVE,
-                'subscription_id' => $request->input('subscription_id')
+                'status' => Status::ACTIVE->value,
+                'subscription_id' => $subscription_id
             ]
         );
         $wipeUser->save();
@@ -77,7 +97,14 @@ class WipeUserController
      */
     public function findbytoken(Request $request): JsonResponse
     {
-        $wiperUser = PhoneWipeUsers::where('auth_token', Hash::make($request->input('auth_token')))->first();
+
+        $auth_token = $request->input('auth_token');
+
+        if($auth_token === null) {
+            return response()->json([], 400);
+        }
+
+        $wiperUser = PhoneWipeUsers::where('auth_token', Hash::make($auth_token))->first();
 
         // should be queued.
         if($wiperUser !== null) {
@@ -128,7 +155,13 @@ class WipeUserController
     public function patch(Request $request): JsonResponse
     {
 
-        $wiperUser = PhoneWipeUsers::where('id', $request->input('id'))->first();
+        $id = $request->input('id');
+
+        if($id === null) {
+            return response()->json([], 400);
+        }
+
+        $wiperUser = PhoneWipeUsers::where('id', $id)->first();
 
         if($wiperUser === null) {
             return response()->json([], 400);
