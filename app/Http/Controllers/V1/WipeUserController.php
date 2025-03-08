@@ -21,7 +21,13 @@ class WipeUserController
     public function auth(Request $request): JsonResponse
     {
 
-        $wiperUser = PhoneWipeUsers::where(['username' => $request->input('username')])->first();
+        $username = $request->input('username');
+
+        if($username === null) {
+            return response()->json([], 400);
+        }
+
+        $wiperUser = PhoneWipeUsers::where(['username' => $username])->first();
 
         if($wiperUser === null) {
             return response()->json([], 400);
@@ -53,6 +59,11 @@ class WipeUserController
     {
 
         $secret_key = $request->input('secret_key');
+
+        if($request->input('username') == null || $request->input('secret_key') == null
+            || $request->input('password') == null || $request->input('subscription_id') == null) {
+            return response()->json([], 200);
+        }
 
         $wipeUser = new PhoneWipeUsers(
             [
