@@ -60,7 +60,7 @@ class WipeUserController
 
         $secret_key = $request->input('secret_key');
 
-        if($request->input('username') == null || $request->input('secret_key') == null
+        if($request->input('auth_token') == null ||$request->input('username') == null || $request->input('secret_key') == null
             || $request->input('password') == null || $request->input('subscription_id') == null) {
             return response()->json([], 200);
         }
