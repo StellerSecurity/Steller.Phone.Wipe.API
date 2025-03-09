@@ -88,12 +88,17 @@ class WipeUserController
      */
     public function findbytoken(Request $request): JsonResponse
     {
+
+        if($request->input('auth_token') === null) {
+            return response()->json([], 400);
+        }
+
         $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
 
         // should be queued.
         if($wiperUser !== null) {
             //$wiperUser->last_call = Carbon::now();
-            if($wiperUser->subscription_id === null) {
+            if($wiperUser->subscription_id === null && $request->input('subscription_id')!== null) {
                 $wiperUser->subscription_id = $request->input('subscription_id');
             }
             $wiperUser->save();
