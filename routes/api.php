@@ -31,7 +31,6 @@ Route::prefix('v1')->group(function () {
                 Route::get('/add', 'add');
                 Route::get('/findbytoken', 'findbytoken');
                 Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-                Route::get('/findbysecretkey', 'findbysecretkey');
                 Route::patch('/patch', 'patch');
             });
         });
@@ -55,7 +54,6 @@ Route::prefix('v2')->group(function () {
                 Route::get('/add', 'add');
                 Route::get('/findbytoken', 'findbytoken');
                 Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-                Route::get('/findbysecretkey', 'findbysecretkey');
                 Route::patch('/patch', 'patch');
             });
         });

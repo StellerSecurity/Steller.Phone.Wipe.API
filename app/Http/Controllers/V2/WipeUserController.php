@@ -133,24 +133,6 @@ class WipeUserController
 
     }
 
-    public function findbysecretkey(Request $request) : JsonResponse {
-        $secret_key = $request->input('secret_key');
-        $wiperUsers = PhoneWipeUsers::all();
-        $response = [];
-        foreach($wiperUsers as $wiperUser) {
-        if(Hash::check($secret_key, $wiperUser->secret_key)) {
-                // needsRehash, update in DB.
-                if (Hash::needsRehash($wiperUser->password)) {
-                    $wiperUser->secret_key = Hash::make($secret_key);
-                    $wiperUser->save();
-                }
-            }
-            $response = $wiperUser;
-            break;
-        }
-
-        return response()->json($response, 200);
-    }
 
     public function patch(Request $request): JsonResponse
     {
