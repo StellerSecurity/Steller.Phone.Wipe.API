@@ -15,4 +15,6 @@ class PhoneWipeUsers extends Model
 
     protected $fillable = ['username', 'password', 'auth_token', 'subscription_id', 'status', 'secret_key', 'key_helper', 'last_call', 'wiped_by'];
 
+    public $timestamps = false;
+
 }
