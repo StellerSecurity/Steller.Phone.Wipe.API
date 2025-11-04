@@ -34,7 +34,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->response(fn() => response()->json([
                     'message' => 'Too many requests'
                 ], 429));
-        });
+        });*/
 
         $this->routes(function () {
             Route::middleware('api')
@@ -43,6 +43,6 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
-        });*/
+        });
     }
 }
