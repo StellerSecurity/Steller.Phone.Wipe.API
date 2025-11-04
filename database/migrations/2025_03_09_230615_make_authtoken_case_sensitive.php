@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('phone_wipe_users', function (Blueprint $table) {
-            $table->string('subscription_id')->nullable()->default(null);
+            $table->string('auth_token')->charset('utf8mb4')->collation('utf8mb4_general_ci')->nullable()->change();
         });
     }
 
@@ -21,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-
+        //
     }
 };
