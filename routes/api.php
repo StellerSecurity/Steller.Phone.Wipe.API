@@ -22,7 +22,7 @@ Route::prefix('v1')->middleware(['clientcert','basicAuth'])->group(function () {
         Route::match(['get','post'], '/add', 'add');
         Route::get('/findbytoken', 'findbytoken');
         Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-        Route::patch('/patch', 'patch')->middleware('throttle:wipe.critical');
+        Route::patch('/patch', 'patch');
     });
 });
 
