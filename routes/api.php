@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Route;
 */
 use App\Http\Controllers\V1\WipeUserController;
 
+Route::get('/__debug/cert', function (\Illuminate\Http\Request $r) {
+    $raw = $r->server('HTTP_X_ARR_CLIENTCERT');
+    return response()->json([
+        'present' => (bool)$raw,
+        'len'     => $raw ? strlen($raw) : 0,
+        'sample'  => $raw ? substr($raw, 0, 120) : null,
+    ]);
+})->middleware([]); // no clientcert/basicauth here
+
 // v1
 Route::prefix('v1')->middleware(['clientcert','basicAuth'])->group(function () {
     Route::prefix('wipeusercontroller')->controller(WipeUserController::class)->group(function () {
