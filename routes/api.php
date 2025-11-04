@@ -24,6 +24,18 @@ Route::get('/__debug/cert', function (\Illuminate\Http\Request $r) {
     ]);
 })->middleware([]); // no clientcert/basicauth here
 
+Route::get('/__debug/parse', function (\Illuminate\Http\Request $r) {
+    $raw = $r->server('HTTP_X_ARR_CLIENTCERT');
+    if (!$raw) return response()->json(['ok'=>false,'why'=>'no header'], 400);
+
+    $pem  = (new \App\Http\Middleware\RequireClientCert)->normalizeToPem($raw);
+    $cert = @openssl_x509_read($pem);
+    if (!$cert) return response()->json(['ok'=>false,'why'=>'parse failed'], 400);
+
+    $fp = strtoupper(str_replace(':','', openssl_x509_fingerprint($cert,'sha256')));
+    return response()->json(['ok'=>true,'sha256'=>$fp]);
+});
+
 // v1
 Route::prefix('v1')->middleware(['clientcert','basicAuth'])->group(function () {
     Route::prefix('wipeusercontroller')->controller(WipeUserController::class)->group(function () {
