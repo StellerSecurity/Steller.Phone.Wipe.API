@@ -55,6 +55,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareAliases = [
 
+        'clientcert' => \App\Http\Middleware\RequireClientCert::class,
         'basicAuth' => \App\Http\Middleware\BasicAuth::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
