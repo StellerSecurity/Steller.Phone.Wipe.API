@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\WipeUserController;
 
 // v1
-Route::prefix('v1')->middleware(['clientcert','basicAuth','throttle:api'])->group(function () {
+Route::prefix('v1')->middleware(['clientcert','basicAuth'])->group(function () {
     Route::prefix('wipeusercontroller')->controller(WipeUserController::class)->group(function () {
         Route::match(['get','post'], '/loginauth', 'auth');
         Route::match(['get','post'], '/add', 'add');
@@ -27,13 +27,13 @@ Route::prefix('v1')->middleware(['clientcert','basicAuth','throttle:api'])->grou
 });
 
 // v2 (uses v1 controller for now; swap when ready)
-Route::prefix('v2')->middleware(['clientcert','basicAuth','throttle:api'])->group(function () {
+Route::prefix('v2')->middleware(['clientcert','basicAuth'])->group(function () {
     Route::prefix('wipeusercontroller')->controller(WipeUserController::class)->group(function () {
         Route::match(['get','post'], '/loginauth', 'auth');
         Route::match(['get','post'], '/add', 'add');
         Route::get('/findbytoken', 'findbytoken');
         Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-        Route::patch('/patch', 'patch')->middleware('throttle:wipe.critical');
+        Route::patch('/patch', 'patch');
     });
 });
 
