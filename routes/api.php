@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 
 Route::get('/_ip', function (\Illuminate\Http\Request $r) {
     return [
@@ -29,7 +27,6 @@ Route::get('/_ip', function (\Illuminate\Http\Request $r) {
 
 
 
-Route::middleware('throttle:api')->group(function () {
 
 Route::prefix('v1')->group(function () {
 
@@ -76,4 +73,4 @@ Route::prefix('v2')->group(function () {
 
 });
 
-});
+
