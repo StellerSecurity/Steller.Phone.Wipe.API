@@ -18,6 +18,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/_ip', function (\Illuminate\Http\Request $r) {
+    return [
+        'ip' => $r->ip(),
+        'xff' => $r->header('X-Forwarded-For'),
+        'proto' => $r->header('X-Forwarded-Proto'),
+    ];
+});
+
+
+Route::middleware('throttle:api')->group(function () {
+
 Route::prefix('v1')->group(function () {
 
     Route::middleware(['basicAuth'])->group(function () {
@@ -62,5 +73,7 @@ Route::prefix('v2')->group(function () {
 
     });
 
+
+});
 
 });

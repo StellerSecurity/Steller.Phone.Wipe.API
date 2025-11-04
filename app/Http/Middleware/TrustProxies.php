@@ -12,17 +12,13 @@ class TrustProxies extends Middleware
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    // If your app is *only* reachable via Azure Front Door/App Gateway/App Service,
+    // this is simplest. Otherwise list your proxy IPs/CIDRs instead of '*'.
+    protected $proxies = '*';
 
-    /**
-     * The headers that should be used to detect proxies.
-     *
-     * @var int
-     */
-    protected $headers =
-        Request::HEADER_X_FORWARDED_FOR |
-        Request::HEADER_X_FORWARDED_HOST |
-        Request::HEADER_X_FORWARDED_PORT |
-        Request::HEADER_X_FORWARDED_PROTO |
-        Request::HEADER_X_FORWARDED_AWS_ELB;
+    // Trust the common X-Forwarded-* headers (no AWS flag)
+    protected $headers = Request::HEADER_X_FORWARDED_FOR
+    | Request::HEADER_X_FORWARDED_HOST
+    | Request::HEADER_X_FORWARDED_PORT
+    | Request::HEADER_X_FORWARDED_PROTO;
 }
