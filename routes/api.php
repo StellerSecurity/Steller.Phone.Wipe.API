@@ -27,6 +27,8 @@ Route::get('/_ip', function (\Illuminate\Http\Request $r) {
 });
 
 
+
+
 Route::middleware('throttle:api')->group(function () {
 
 Route::prefix('v1')->group(function () {
@@ -42,7 +44,7 @@ Route::prefix('v1')->group(function () {
                 Route::get('/add', 'add');
                 Route::get('/findbytoken', 'findbytoken');
                 Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-                Route::patch('/patch', 'patch');
+                Route::patch('/patch', 'patch')->middleware('throttle:wipe.critical');
             });
         });
 
@@ -65,7 +67,7 @@ Route::prefix('v2')->group(function () {
                 Route::get('/add', 'add');
                 Route::get('/findbytoken', 'findbytoken');
                 Route::get('/findbysubscriptionid', 'findbysubscriptionid');
-                Route::patch('/patch', 'patch');
+                Route::patch('/patch', 'patch')->middleware('throttle:wipe.critical');
             });
         });
 
