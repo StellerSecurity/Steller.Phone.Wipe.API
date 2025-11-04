@@ -2,23 +2,22 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 
 class TrustProxies extends Middleware
 {
-    /**
-     * The trusted proxies for this application.
-     *
-     * @var array<int, string>|string|null
-     */
-    // If your app is *only* reachable via Azure Front Door/App Gateway/App Service,
-    // this is simplest. Otherwise list your proxy IPs/CIDRs instead of '*'.
+    // ELLER sæt her specifikke proxy-IP’er i stedet for '*'
     protected $proxies = '*';
 
-    // Trust the common X-Forwarded-* headers (no AWS flag)
-    protected $headers = Request::HEADER_X_FORWARDED_FOR
-    | Request::HEADER_X_FORWARDED_HOST
-    | Request::HEADER_X_FORWARDED_PORT
-    | Request::HEADER_X_FORWARDED_PROTO;
+    /**
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
+     */
+    protected $headers =
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_HOST |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO; // evt også HEADER_X_FORWARDED_AWS_ELB hvis du bruger AWS
 }
