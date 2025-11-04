@@ -24,17 +24,55 @@ Route::get('/__debug/cert', function (\Illuminate\Http\Request $r) {
     ]);
 })->middleware([]); // no clientcert/basicauth here
 
-Route::get('/__debug/parse', function (\Illuminate\Http\Request $r) {
-    $raw = $r->server('HTTP_X_ARR_CLIENTCERT');
-    if (!$raw) return response()->json(['ok'=>false,'why'=>'no header'], 400);
 
-    $pem  = (new \App\Http\Middleware\RequireClientCert)->normalizeToPem($raw);
-    $cert = @openssl_x509_read($pem);
-    if (!$cert) return response()->json(['ok'=>false,'why'=>'parse failed'], 400);
+Route::get('/__debug/parse', function (Request $r) {
+    try {
+        $raw = $r->server('HTTP_X_ARR_CLIENTCERT');
+        if (!$raw) {
+            return response()->json(['ok'=>false,'why'=>'no header X-ARR-ClientCert'], 400);
+        }
 
-    $fp = strtoupper(str_replace(':','', openssl_x509_fingerprint($cert,'sha256')));
-    return response()->json(['ok'=>true,'sha256'=>$fp]);
-});
+        // Normalize header → PEM (handles URL-escaped, literal "\n", base64 DER, or already PEM)
+        $s = trim($raw, " \t\n\r\0\x0B\"'");
+        $s = urldecode($s);
+        $s = str_replace(['\\r\\n','\\n','\\r'], "\n", $s);
+
+        if (!str_contains($s, '-----BEGIN CERTIFICATE-----')) {
+            $b64 = preg_replace('/\s+/', '', $s);
+            $der = base64_decode($b64, true);
+            $body = chunk_split(base64_encode($der !== false ? $der : $s), 64, "\n");
+            $pem  = "-----BEGIN CERTIFICATE-----\n{$body}-----END CERTIFICATE-----\n";
+        } else {
+            $pem = preg_replace('/\r\n?/', "\n", $s);
+        }
+
+        if (!extension_loaded('openssl') || !function_exists('openssl_x509_read')) {
+            return response()->json(['ok'=>false,'why'=>'openssl unavailable'], 500);
+        }
+
+        $cert = @openssl_x509_read($pem);
+        if (!$cert) {
+            return response()->json([
+                'ok'  => false,
+                'why' => 'openssl_x509_read failed',
+                'peek'=> substr($pem, 0, 80),
+            ], 500);
+        }
+
+        $fp = strtoupper(str_replace(':','', openssl_x509_fingerprint($cert, 'sha256')));
+
+        return response()->json([
+            'ok'     => true,
+            'sha256' => $fp,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok'    => false,
+            'error' => get_class($e).': '.$e->getMessage(),
+            'line'  => $e->getFile().':'.$e->getLine(),
+        ], 500);
+    }
+})->middleware([]);
 
 // v1
 Route::prefix('v1')->middleware(['clientcert','basicAuth'])->group(function () {
