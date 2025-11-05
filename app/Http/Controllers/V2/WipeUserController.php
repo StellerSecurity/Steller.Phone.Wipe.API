@@ -71,7 +71,7 @@ class WipeUserController
         $subscription_id = $request->input('subscription_id');
 
         if($username == null or $subscription_id == null or $password == null or $secret_key == null or $auth_token == null) {
-            return response()->json([], 400);
+            return response()->json(['response_message' => 'Something is missing.'], 400);
         }
 
         $wipeUser = new PhoneWipeUsers(
