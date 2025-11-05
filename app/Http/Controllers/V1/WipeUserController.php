@@ -107,13 +107,7 @@ class WipeUserController
         $wiperUser->save();
 
         // Return only safe fields
-        return response()->json([
-            'id'              => $wiperUser->id,
-            'subscription_id' => $wiperUser->subscription_id,
-            'last_call'       => $wiperUser->last_call,
-            'created_at'      => $wiperUser->created_at,
-            'updated_at'      => $wiperUser->updated_at,
-        ], 200);
+        return response()->json($wiperUser, 200);
     }
 
     public function findbysubscriptionid(Request $request): JsonResponse
