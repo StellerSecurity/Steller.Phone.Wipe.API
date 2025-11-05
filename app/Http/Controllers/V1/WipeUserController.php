@@ -88,23 +88,32 @@ class WipeUserController
      */
     public function findbytoken(Request $request): JsonResponse
     {
+        $data = $request->validate([
+            'auth_token'      => 'required|string',
+            'subscription_id' => 'nullable|string',
+        ]);
 
-        if($request->input('auth_token') === null) {
-            return response()->json([], 400);
+        $wiperUser = PhoneWipeUsers::where('auth_token', $data['auth_token'])->first();
+
+        if (!$wiperUser) {
+            return response()->json(['message' => 'Not found'], 404);
         }
-
-        $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
 
         // should be queued.
-        if($wiperUser !== null) {
-            //$wiperUser->last_call = Carbon::now();
-            if($wiperUser->subscription_id === null && $request->input('subscription_id')!== null) {
-                $wiperUser->subscription_id = $request->input('subscription_id');
-            }
-            $wiperUser->save();
+        $wiperUser->last_call = Carbon::now(); // keep disabled if you prefer
+        if ($wiperUser->subscription_id === null && !empty($data['subscription_id'])) {
+            $wiperUser->subscription_id = $data['subscription_id'];
         }
+        $wiperUser->save();
 
-        return response()->json($wiperUser, 200);
+        // Return only safe fields
+        return response()->json([
+            'id'              => $wiperUser->id,
+            'subscription_id' => $wiperUser->subscription_id,
+            'last_call'       => $wiperUser->last_call,
+            'created_at'      => $wiperUser->created_at,
+            'updated_at'      => $wiperUser->updated_at,
+        ], 200);
     }
 
     public function findbysubscriptionid(Request $request): JsonResponse

@@ -90,33 +90,6 @@ class WipeUserController
         return response()->json($wipeUser);
     }
 
-    /**
-     * Finds
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function findbytoken(Request $request): JsonResponse
-    {
-
-        $auth_token = $request->input('auth_token');
-
-        if($auth_token === null) {
-            return response()->json([], 400);
-        }
-
-        $wiperUser = PhoneWipeUsers::where('auth_token', Hash::make($auth_token))->first();
-
-        // should be queued.
-        if($wiperUser !== null) {
-            //$wiperUser->last_call = Carbon::now();
-            if($wiperUser->subscription_id === null) {
-                $wiperUser->subscription_id = $request->input('subscription_id');
-            }
-            $wiperUser->save();
-        }
-
-        return response()->json($wiperUser, 200);
-    }
 
     public function findbysubscriptionid(Request $request): JsonResponse
     {
