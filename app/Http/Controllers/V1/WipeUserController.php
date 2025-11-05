@@ -138,7 +138,7 @@ class WipeUserController
         }
 
         if($wiperUser->status !== Status::ACTIVE->value) {
-            return response()->json([], 404);
+            return response()->json([], 400);
         }
 
         $wiperUser->fill($request->only('status'));
