@@ -93,17 +93,17 @@ class WipeUserController
             'subscription_id' => 'nullable|string',
         ]);
 
-        $wiperUser = PhoneWipeUsers::where('auth_token', $data['auth_token'])->first();
+        $wiperUser = PhoneWipeUsers::where([
+            ['auth_token', '=', $data['auth_token']],
+            ['subscription_id', '=', $data['subscription_id']],
+        ])->first();
 
         if (!$wiperUser) {
             return response()->json(['message' => 'Not found'], 404);
         }
 
         // should be queued.
-        $wiperUser->last_call = Carbon::now(); // keep disabled if you prefer
-        if ($wiperUser->subscription_id === null && !empty($data['subscription_id'])) {
-            $wiperUser->subscription_id = $data['subscription_id'];
-        }
+        $wiperUser->last_call = Carbon::now();
         $wiperUser->save();
 
         // Return only safe fields
@@ -114,17 +114,13 @@ class WipeUserController
     {
 
         $subscription_id = $request->input('subscription_id');
-
         if($subscription_id === null) {
             return response()->json();
         }
 
         $wipe = PhoneWipeUsers::where('subscription_id', $request->input('subscription_id'))->first();
-
         return response()->json($wipe);
-
     }
-
 
     public function patch(Request $request): JsonResponse
     {
