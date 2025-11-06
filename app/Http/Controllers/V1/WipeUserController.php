@@ -90,7 +90,7 @@ class WipeUserController
     {
 
         if($request->input('auth_token') == null
-            ||$request->input('username') == null) {
+            ||$request->input('subscription_id') == null) {
             return response()->json(['message' => 'Not found'], 302);
         }
 
