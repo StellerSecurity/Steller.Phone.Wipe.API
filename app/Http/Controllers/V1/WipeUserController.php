@@ -91,7 +91,7 @@ class WipeUserController
 
         if($request->input('auth_token') == null
             ||$request->input('username') == null) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Not found'], 302);
         }
 
         $wiperUser = PhoneWipeUsers::where([
