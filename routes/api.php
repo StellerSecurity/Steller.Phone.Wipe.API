@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 use App\Http\Controllers\V1\WipeUserController;
+use Mondago\ApplicationInsights\Middleware\TrackRequest;
 
 // v1
 Route::prefix('v1')->middleware(['basicAuth'])->group(function () {
@@ -24,5 +25,5 @@ Route::prefix('v1')->middleware(['basicAuth'])->group(function () {
         Route::get('/findbysubscriptionid', 'findbysubscriptionid');
         Route::patch('/patch', 'patch');
     });
-});
+})->middleware(TrackRequest::class);
 
