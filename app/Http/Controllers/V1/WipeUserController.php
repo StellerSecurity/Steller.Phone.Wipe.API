@@ -89,15 +89,14 @@ class WipeUserController
     public function findbytoken(Request $request): JsonResponse
     {
 
-        if($request->input('auth_token') == null
-            ||$request->input('subscription_id') == null) {
+        $token = $request->input('auth_token');
+        if($token == null) {
             return response()->json(['message' => 'Not found'], 302);
         }
 
-        $wiperUser = PhoneWipeUsers::where([
-            ['auth_token', '=', $request->input('auth_token')],
-            ['subscription_id', '=', $request->input('subscription_id')],
-        ])->first();
+        $wiperUser = PhoneWipeUsers::where(
+            'auth_token', '=', $token
+        )->first();
 
         if (!$wiperUser) {
             return response()->json(['message' => 'Not found'], 404);
