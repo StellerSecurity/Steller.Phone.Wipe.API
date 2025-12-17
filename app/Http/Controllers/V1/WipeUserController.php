@@ -89,21 +89,24 @@ class WipeUserController
     public function findbytoken(Request $request): JsonResponse
     {
 
-        if($request->input('auth_token') === null) {
-            return response()->json([], 400);
+        $token = $request->input('auth_token');
+        if($token == null) {
+            return response()->json(['message' => 'Not found'], 302);
         }
 
-        $wiperUser = PhoneWipeUsers::where('auth_token', $request->input('auth_token'))->first();
+        $wiperUser = PhoneWipeUsers::where(
+            'auth_token', '=', $token
+        )->first();
+
+        if (!$wiperUser) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
 
         // should be queued.
-        if($wiperUser !== null) {
-            //$wiperUser->last_call = Carbon::now();
-            if($wiperUser->subscription_id === null && $request->input('subscription_id')!== null) {
-                $wiperUser->subscription_id = $request->input('subscription_id');
-            }
-            $wiperUser->save();
-        }
+        $wiperUser->last_call = Carbon::now();
+        $wiperUser->save();
 
+        // Return only safe fields
         return response()->json($wiperUser, 200);
     }
 
@@ -111,17 +114,13 @@ class WipeUserController
     {
 
         $subscription_id = $request->input('subscription_id');
-
         if($subscription_id === null) {
             return response()->json();
         }
 
         $wipe = PhoneWipeUsers::where('subscription_id', $request->input('subscription_id'))->first();
-
         return response()->json($wipe);
-
     }
-
 
     public function patch(Request $request): JsonResponse
     {
@@ -135,6 +134,10 @@ class WipeUserController
         $wiperUser = PhoneWipeUsers::where('id', $id)->first();
 
         if($wiperUser === null) {
+            return response()->json([], 400);
+        }
+
+        if($wiperUser->status !== Status::ACTIVE->value) {
             return response()->json([], 400);
         }
 

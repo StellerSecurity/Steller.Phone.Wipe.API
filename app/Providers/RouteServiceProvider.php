@@ -24,9 +24,17 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+       /* RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->ip());
         });
+
+        RateLimiter::for('wipe.critical', function (Request $r) {
+            return Limit::perMinute(5)
+                ->by($r->ip())               // IP-keyed (works with Azure if TrustProxies is set)
+                ->response(fn() => response()->json([
+                    'message' => 'Too many requests'
+                ], 429));
+        });*/
 
         $this->routes(function () {
             Route::middleware('api')

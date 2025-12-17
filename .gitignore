@@ -5,7 +5,9 @@
 /public/storage
 /storage/*.key
 /example-app/vendor
+/storage/framework/views
 .env
+storage/logs
 vendor
 .env.backup
 .env.production
