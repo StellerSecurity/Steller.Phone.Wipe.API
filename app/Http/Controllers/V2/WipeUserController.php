@@ -127,7 +127,7 @@ class WipeUserController
             return response()->json();
         }
 
-        $wipe = PhoneWipeUsers::where('subscription_id', Hash::make($request->input('subscription_id')))->first();
+        $wipe = PhoneWipeUsers::where('subscription_id', Hash::make($subscription_id))->first();
 
         return response()->json($wipe);
 
