@@ -37,7 +37,7 @@ class WipeUserController
 
         // wrong login.
         if(!Hash::check($password, $wiperUser->password)) {
-            return response()->json([], 400);
+            return response()->json([]);
         }
 
         // needsRehash, update in DB.
@@ -91,7 +91,7 @@ class WipeUserController
 
         $token = $request->input('auth_token');
         if($token == null) {
-            return response()->json(['message' => 'Not found'], 302);
+            return response()->json(['message' => 'Not found', 'response_code' => 302]);
         }
 
         $wiperUser = PhoneWipeUsers::where(
@@ -99,7 +99,7 @@ class WipeUserController
         )->first();
 
         if (!$wiperUser) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['message' => 'Not found', 'response_code' => 404]);
         }
 
         // should be queued.
@@ -118,7 +118,7 @@ class WipeUserController
             return response()->json();
         }
 
-        $wipe = PhoneWipeUsers::where('subscription_id', $request->input('subscription_id'))->first();
+        $wipe = PhoneWipeUsers::where('subscription_id', $subscription_id)->first();
         return response()->json($wipe);
     }
 
@@ -128,7 +128,7 @@ class WipeUserController
         $id = $request->input('id');
 
         if($id === null) {
-            return response()->json([], 400);
+            return response()->json([]);
         }
 
         $wiperUser = PhoneWipeUsers::where('id', $id)->first();
